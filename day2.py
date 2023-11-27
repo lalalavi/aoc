@@ -6,38 +6,25 @@ def main(fname):
         pairs= fp.read()
         list_rounds = []
         for pair in pairs.splitlines():
-            a = pair.split()[0]
-            b = pair.split()[1]
-            outcome_pair = calculate_outcome(a,b)
-            #update  with the shape chosen - another function
-            #append to result list of rounds
-        #sum all over the mfkin list, then return the total score
- 
-def calculate_outcome(o, c):
-    if (o == "A" and c == "Z") or (o == "B" and c == "X") or (o == "C" and c == "Y"):
-        print('ya losing son')
-        return 0
-    if (o == 'A' and c == 'Y') or (o == 'B' and c == 'Z') or (o == 'C' and c == 'X'):
-        print('ya winning son')
-        return 6  
-    else:
-        print('ya tie')
-        return 3  
+            pair = pair.replace(" ", "")         
+            outcome_pair = calculate_outcome(pair)
+            list_rounds.append(outcome_pair)
+        total_score = sum(list_rounds)
+        print("Total Score:", total_score)
     
-def calculate_shape(chosen_shape):
+def calculate_outcome(pair):
     shape_dict = {
-        "Y": 2,  #Paper
-        "X": 1,  #Rock
-        "Z": 3  #Scissors
+        "AZ": 0+3, "AY": 6+2, "AX": 3+1,
+        "BX": 0+1, "BZ": 6+3, "BY": 3+2,
+        "CY": 0+2, "CX": 6+1, "CZ": 3+3
     }
-
-'''
-    outcome_dict = {
-        "A": ["Z", "Y"], # you lose, opp loses
-        "B": ["X", "Z"], # you lose
-        "C": ["Y", "X"]  # you lose
-    }    
-'''
+    shape_dict_p2 = {
+        "AZ": 2+6, "AY": 1+3, "AX": 3+0,
+        "BX": 1+0, "BZ": 3+6, "BY": 2+3,
+        "CY": 3+3, "CX": 2+0, "CZ": 1+6
+    }
+    if pair in shape_dict_p2:
+        return shape_dict_p2[pair]
 
 if __name__ == "__main__":
     main(sys.argv[1])
