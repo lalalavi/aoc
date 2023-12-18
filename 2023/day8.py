@@ -1,5 +1,5 @@
 import sys
-from collections import deque 
+import math
 
 def main(fname):
     with open(fname) as fp:
@@ -13,49 +13,27 @@ def main(fname):
             line = line.split("=")
             node, left, right = line[0], line[1].split(",")[0], line[1].split(",")[1]
             tree[node] = left, right
-            # if A is in the last element of the node, add it to the list
             if node.endswith("A"):
                 nodes_a.append(node)
 
-        current_node = "AAA"
         steps = 0
-        z_count = 0
-        Searching = True   
         print(f"Nodes: {nodes_a}")
-        # check = "".join([str(x) for x in instruct])
-        # print(f"all inst: {check}")
-        # print(f"Principal period: {principal_period(check)}")
-
-       
-        while Searching:
-            for LR in instruct:
-                for i, node in enumerate(nodes_a):    #evaluate exit condition
+        steps_to_end = {n: 0 for n in nodes_a}
+        
+        for orig_node in nodes_a: #we will check for each node when does it reach any Z node and how many steps it takes
+            steps = 0
+            node = orig_node
+            search = True
+            while search: 
+                for LR in instruct: 
                     if node.endswith("Z"):
-                        z_count += 1
-                    if z_count == len(nodes_a) and node.endswith("Z"):
-                        print(f"we reachedz biatchez yeyeyeyeyeeeee", nodes_a)
-                        Searching = False
+                        steps_to_end[orig_node] = (steps, node)
+                        search = False
                         break
-                if not Searching:
-                    break
-                z_count = 0
-                steps += 1
-                for i, node in enumerate(nodes_a):  
-                    options = tree[node] #get the possibilities of the current node
-                    if LR == 0:
-                        nodes_a[i] = options[0]
+                    node = tree[node][LR] 
+                    steps += 1
 
-                    else:
-                        nodes_a[i] = options[1] 
-
-        print(f"Solution: {steps}")
-
-def principal_period(s):
-    '''
-    This is based on the observation that a string is periodic if and only if 
-    it is equal to a nontrivial rotation of itself.'''
-    i = (s+s).find(s, 1, -1)
-    return None if i == -1 else s[:i]
+        print(f"Solution: {math.lcm(*[x[0] for x in steps_to_end.values()])}")
 
 if __name__ == "__main__":
     main(sys.argv[1])
